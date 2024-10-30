@@ -74,13 +74,29 @@ def create_gaussian_kernel(radius, sigma):
 #main functions
 
 def invert(image):
-    inverted_img = 255 - image
+    image = image.astype(np.float32)
+    
+    if len(image.shape) == 3:
+        if image.max() <= 1.0:
+            image = image * 255
+        inverted_img = 255 - image
+    else:
+        if image.max() <= 1.0:
+            image = image * 255
+        inverted_img = 255 - image
+        
     return np.clip(inverted_img, 0, 255).astype(np.uint8)
 
 
 def brightness(image, value):
-    tempArr = np.clip(image + value, 0, 255)
-    return tempArr.astype(np.uint8)
+    image = image.astype(np.float32)
+    
+    if image.max() <= 1.0:
+        image = image * 255
+        
+    adjusted = image + value
+    
+    return np.clip(adjusted, 0, 255).astype(np.uint8)
 
 def grayscale(image):
     nrows, ncols, nchannels = image.shape
@@ -93,10 +109,15 @@ def grayscale(image):
     return new_img
 
 def blur(image, radius, sigma):
+    image = image.astype(np.float32)
+    
+    if image.max() <= 1.0:
+        image = image * 255
+        
     kernel = create_gaussian_kernel(radius, sigma)
 
-    if len(image.shape) == 3: #if colored
-        blurred = np.zeros_like(image, dtype=np.float32) #our image, initially zeores
+    if len(image.shape) == 3:
+        blurred = np.zeros_like(image, dtype=np.float32)
         for i in range(3):
             blurred[:,:,i] = signal.convolve2d(
                 image[:,:,i],
@@ -104,7 +125,7 @@ def blur(image, radius, sigma):
                 mode='same',
                 boundary='symm'
             )
-    else: # if grayscale
+    else:
         blurred = signal.convolve2d(
             image, 
             kernel,
@@ -114,13 +135,36 @@ def blur(image, radius, sigma):
 
     return np.clip(blurred, 0, 255).astype(np.uint8)
 
-def sharpen(img, intensity):
-    sharpening_kernel = np.array([[0, -1, 0],
-                                [-1, 4 * intensity + 1, -1],
-                                [0, -1, 0]])
+def sharpen(image, intensity):
+    image = image.astype(np.float32)
+    
+    if image.max() <= 1.0:
+        image = image * 255
 
-    sharpened_image = signal.convolve2d(img, sharpening_kernel, mode='reflect')
-    return sharpened_image
+    if len(image.shape) == 3:
+        sharpened = np.zeros_like(image)
+        for i in range(3):
+            sharpening_kernel = np.array([[0, -1, 0],
+                                        [-1, 4 * intensity + 1, -1],
+                                        [0, -1, 0]])
+            sharpened[:,:,i] = signal.convolve2d(
+                image[:,:,i], 
+                sharpening_kernel, 
+                mode='same',
+                boundary='symm'
+            )
+    else:
+        sharpening_kernel = np.array([[0, -1, 0],
+                                    [-1, 4 * intensity + 1, -1],
+                                    [0, -1, 0]])
+        sharpened = signal.convolve2d(
+            image,
+            sharpening_kernel,
+            mode='same',
+            boundary='symm'
+        )
+
+    return np.clip(sharpened, 0, 255).astype(np.uint8)
 
 def flip(image, axis='horizontal'):
 
