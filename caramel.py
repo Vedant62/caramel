@@ -155,7 +155,7 @@ group.add_argument("--grayscale", help='convert an image to grayscale', action='
 group.add_argument("--blur", help="radius:controls area, sigma:controls strength", metavar=('RADIUS', 'SIGMA'), nargs=2, type=float)
 group.add_argument("--sharpen", help="sharpen an image", metavar='INTENSITY', type=float)
 group.add_argument("--flip", help="horizontal: left to right, vertical: upside down", choices=['horizontal', 'vertical'], metavar='AXIS', type=str)
-group.add_argument("--rotate", help="rotate anti-clockwise 90, 180, 270 degrees", choices=[90,180,270], metavar='DEG')
+group.add_argument("--rotate", help="rotate anti-clockwise 90, 180, 270 degrees", choices=[90,180,270], metavar='DEG', type=int)
 
 
 
