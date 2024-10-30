@@ -53,7 +53,10 @@ def preview_and_save(image_array):
 
             file_name = input("Enter a name for your file (without extensions): ")
             image_save_path = os.path.join(save_path, f"{file_name}.png")
-            plt.imsave(image_save_path, image_array, cmap='gray')
+            if len(image.shape)==2:
+                plt.imsave(image_save_path, image_array, cmap='gray')
+            else:
+                plt.imsave(image_save_path, image_array)
             print(f"Image saved to: {image_save_path}")
         else:
             print("Save canceled.")
@@ -72,7 +75,8 @@ def create_gaussian_kernel(radius, sigma):
 
 def invert(image):
     inverted_img = 255 - image
-    return inverted_img
+    return np.clip(inverted_img, 0, 255).astype(np.uint8)
+
 
 def brightness(image, value):
     tempArr = np.clip(image + value, 0, 255)
