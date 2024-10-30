@@ -6,7 +6,7 @@ basic image processing directly from your cli
 
 <img width="1162" alt="image" src="https://github.com/user-attachments/assets/b8d31355-31e2-423e-8fea-31acb40a133d">
 
-> you can change to any interpreter you want and install numpy, matlplotlib and scipy
+> you can change to any interpreter you want and install `numpy`, `matlplotlib` and `scipy`
 
 - prompts finder to choose an image
 - can preview the image before saving
